@@ -22,7 +22,7 @@ dict_columns = dict_attr2vals.keys()
 
 ds = pd.read_csv(inputfile, names=list(dict_columns))
 
-ds = ds.sort_values(by="class" , ascending=True)
+ds = ds.sort_values(by='class' , ascending=True)
 
 decision_tree = {}
 
@@ -80,11 +80,13 @@ def get_optimal_attr(ds):
         dict_attr2vals[attr] = ds[attr].drop_duplicates().tolist()
     
     for attr in ds_columns:
-        if attr == 'class':
+        if attr == 'class': #the attribute 'class' should not be recognized as a 'splitable' attribute
             continue
         
         ds_attr_entropy = 0.0
         for val in dict_attr2vals[attr]:
+            #get a sub dataset ds_sub from ds. ds_sub contains all records in ds that satisfy ds[attr] == val
+            #ds_sub don't have the attr column
             ds_sub = ds[ds[attr] == val].drop(attr, 1)
             
             #H(Di)
@@ -120,9 +122,9 @@ def buildtree(ds, decision_tree):
         ds_sub_columns = ds_sub.columns
         ds_sub_entropy = calc_entropy_for_dataset(ds_sub)
         
-        if ds_sub_entropy == 0.0:
+        if ds_sub_entropy == 0.0: #ds_sub only contains samples that belong to just one class
             decision_tree[ds_attr_optimal][val] = {str(ds_sub['class'].tolist()[0]) : len(ds_sub)} # class : support_num
-        elif len(ds_sub_columns) <= 1:
+        elif len(ds_sub_columns) <= 1: #ds_sub still contains samples that belong to multiple classes despite all attributes has been used
             dict_ds_sub_cls_stat = dict(ds_sub['class'].value_counts().sort_index())
             result_class = max(dict_ds_sub_cls_stat, key = dict_ds_sub_cls_stat.get)
             decision_tree[ds_attr_optimal][val] = {str(result_class) : dict_ds_sub_cls_stat[result_class]} # class : support_num
@@ -148,17 +150,6 @@ def dump_decision_tree(dt, dtf, indent):
                     dtf.write(indent+"\"" + attr_up + "\" -> \"" + attr_down + "\" [label = \"" + val + "\"]\n")
                 indent_deeper = indent + "    "
                 dump_decision_tree(dt[attr_up][val], dtf, indent_deeper)
-
-##%%%
-#def prunetree(dt):
-#    for attr_up in dt:
-#        for val in dt[attr_up]:
-#            if isinstance(val, dict) == False:
-#                continue
-#            else:
-#                prunetree(dt[attr_up][val])
-#                for attr_down in dt[attr_up][val]:
-#        
                 
 #%%%
 def get_class2number_from_tree(dt, map_class2number):
@@ -180,7 +171,7 @@ def get_dominant_class_from_tree(dt):
     return dominant_class
 
 #%%%
-def get_sample_class_from_tree(x_sample, dt):
+def get_sample_class_from_tree(x_sample, dt): #get the class for a sample by applying the learned decision tree to the sample
     x_sample_class = ''
     for attr in dt:
         if attr == '0' or attr == '1':
@@ -208,8 +199,6 @@ def evaluate_decision_tree_on_validation_set(ds, dt):
         x_sample = ds.iloc[ix]
         x_sample_class = get_sample_class_from_tree(x_sample, dt)
             
-        #print("x_sample_class is " + str(x_sample_class) + ", type(x_sample_class) is " + str(type(x_sample_class)))
-        #print("x_sample['class'] is " + str(x_sample['class']) + ", type(x_sample['class']) is " + str(type(x_sample['class'])))
         if x_sample_class == str(x_sample['class']): #type(x_sample_class) is str, while type(x_sample['class']) is int
             correction_number += 1
         
@@ -226,17 +215,13 @@ class1_training_set, class1_validation_set = split_dataset(ds, 0, series_class_t
 class2_training_set, class2_validation_set = split_dataset(ds, series_class_to_sample_num.values[0], series_class_to_sample_num.values[1], training_ratio)
 
 ds_training_set = class1_training_set.append(class2_training_set)
-#print(ds_training_set)
 
 ds_validation_set = class1_validation_set.append(class2_validation_set)
-#print(ds_validation_set)
 
 
 buildtree(ds_training_set, decision_tree)
 correction_rate = evaluate_decision_tree_on_validation_set(ds_validation_set, decision_tree)
 print(correction_rate)
-
-#prunetree(decision_tree)
 
 dtf = open(outputfile, "w")
 output_decision_tree(decision_tree, dtf)
