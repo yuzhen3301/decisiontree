@@ -211,6 +211,7 @@ def evaluate_decision_tree_on_validation_set(ds, dt):
 #generate the training set and the valdiation set
 series_class_to_sample_num = num_of_samples_in_each_class(ds)
 print(series_class_to_sample_num)
+
 class1_training_set, class1_validation_set = split_dataset(ds, 0, series_class_to_sample_num.values[0], training_ratio)
 class2_training_set, class2_validation_set = split_dataset(ds, series_class_to_sample_num.values[0], series_class_to_sample_num.values[1], training_ratio)
 

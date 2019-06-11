@@ -1,2 +1,2 @@
 # decisiontree
-A decision tree classifier build from scratch with Python
+A decision tree classifier built from scratch with Python
