@@ -101,7 +101,7 @@ def get_optimal_attr(ds):
         
         dict_attr2entropy[attr] = ds_attr_entropy
     
-    dict_attr2entropy['class'] = 1.0 #'class' is not a real class of the original dataset
+    dict_attr2entropy['class'] = 1.0 #'class' is not a real attribute of the original dataset
     
     #I(attr) = H(D) - H(D, attr)
     dict_attr2gain = {k : ds_entropy-dict_attr2entropy[k] for k in dict_attr2entropy}
