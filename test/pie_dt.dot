@@ -1,0 +1,9 @@
+digraph dt {
+    edge [fontname="FangSong"]
+    node [shape = "box", style = "filled", color = "red", fontname="FangSong"]
+    "形状" -> "馅料量" [label = "square"]
+        "馅料量" -> "0" [label = "small"]
+        "馅料量" -> "1" [label = "big"]
+    "形状" -> "0" [label = "triangle"]
+    "形状" -> "1" [label = "circle"]
+}

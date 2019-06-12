@@ -1,0 +1,8 @@
+digraph dt {
+    edge [fontname="FangSong"]
+    node [shape = "box", style = "filled", color = "red", fontname="FangSong"]
+    "是否快要迟到" -> "0" [label = "不是" ]
+ "是否快要迟到" -> "1" [label = "是"]
+    "是否快要迟到" -> "1" [label = "再见"]
+    "是否快要迟到" -> "1" [label = "错了"]
+}

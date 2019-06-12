@@ -1,0 +1,8 @@
+big,circle,small,1
+small,circle,small,1
+big,square,small,0
+big,triangle,small,0
+big,square,big,1
+small,square,small,0
+small,square,big,1
+big,circle,big,1

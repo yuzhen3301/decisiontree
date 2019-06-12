@@ -1,0 +1,8 @@
+digraph dt {
+    edge [fontname="FangSong"]
+    node [shape = "box", style = "filled", color = "red", fontname="FangSong"]
+    "是否快要迟到" -> "天气" [label = "否" ]
+        "天气" -> "0" [label = "非恶劣" ]
+        "天气" -> "1" [label = "恶劣" ]
+    "是否快要迟到" -> "1" [label = "是" ]
+}
